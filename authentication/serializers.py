@@ -4,6 +4,16 @@ from authentication import models
 
 class CreateUserSerializer(serializers.ModelSerializer):
     
+    confirm_password = serializers.CharField(write_only = True, required = False)
+    
+    
+    def validate(self, data):
+        
+        if data['confirm_password'] != data['password']:
+            
+            raise serializers.ValidationError("Passwords must match")
+            
+        return data
     
     def create(self, validated_data):
         
@@ -38,17 +48,17 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
         
         
-        class Meta:
+    class Meta:
             
-            fields = "__all__"
-            extra_kwargs = {
-                "password":{
-                    "write_only":True,
-                    "required":False
-                }
+        fields = "__all__"
+        extra_kwargs = {
+            "password":{
+                "write_only":True,
+                "required":False
             }
+        }
             
-            model = models.User
+        model = models.User
         
         
 
